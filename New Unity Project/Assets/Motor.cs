@@ -49,7 +49,7 @@ public class Motor : MonoBehaviour {
 			if (Input.GetKey(KeyCode.Mouse0))
 			{
 				powerLineVector = linesEnd * power;
-                if (power >= 10F || power <= 0F)
+                if (power - Radius >= 10F || power - Radius <= 0F)
                 {
                     powerInc = !powerInc;
                 }
