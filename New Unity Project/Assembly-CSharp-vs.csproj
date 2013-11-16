@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Controller.cs" />
+     <Compile Include="Assets\FullBounce.cs" />
      <Compile Include="Assets\Meshcolor.cs" />
      <Compile Include="Assets\Motor.cs" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
