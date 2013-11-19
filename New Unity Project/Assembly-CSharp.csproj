@@ -46,10 +46,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Checkpoint.cs" />
      <Compile Include="Assets\Controller.cs" />
-     <Compile Include="Assets\FullBounce.cs" />
+     <Compile Include="Assets\DebugScript.cs" />
      <Compile Include="Assets\Meshcolor.cs" />
      <Compile Include="Assets\Motor.cs" />
+     <Compile Include="Assets\NoFriction.cs" />
+     <Compile Include="Assets\SpecialCollider.cs" />
+     <Compile Include="Assets\StickyWall.cs" />
+     <Compile Include="Assets\WallSlider.cs" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
   </ItemGroup>
   <ItemGroup>
