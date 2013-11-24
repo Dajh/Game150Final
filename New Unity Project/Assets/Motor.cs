@@ -11,6 +11,7 @@ public class Motor : MonoBehaviour {
     public float HighSpeedDrag = 0.25F;
     public float LowSpeedDrag = 1.9F;
     public float LowSpeedDragThreshold = 1.8F;
+    public float LineLength = 10F;
 	private LineRenderer powerLine;
 	private LineRenderer aimLine;
     private bool powerInc = true;
@@ -20,10 +21,11 @@ public class Motor : MonoBehaviour {
     [HideInInspector]
     public bool inTheOpen = false;
     private Vector3 posBeforeLaunch = new Vector3();
+    private GameObject[] checkpoints;
 	
 	// Use this for initialization
 	void Start () {
-
+        checkpoints = GameObject.FindGameObjectsWithTag("Checkpoint");
         //this.gameObject.collider.material.bounciness = 1F;
 		powerLine = PowerLine.GetComponent<LineRenderer>();
 		powerLine.SetWidth(0.5f,0.5f);
@@ -69,7 +71,7 @@ public class Motor : MonoBehaviour {
 			if (Input.GetKey(KeyCode.Mouse0))
 			{
 				powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
-                if (power - Radius >= 10F || power - Radius <= 0F)
+                if (power - Radius >= LineLength || power - Radius <= 0F)
                 {
                     powerInc = !powerInc;
                 }
@@ -92,6 +94,10 @@ public class Motor : MonoBehaviour {
                 powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
 				power = 1F;
 				this.gameObject.transform.rigidbody.AddForce(powerLineVector * SpeedMultiplier);
+                foreach (GameObject obj in checkpoints)
+                {
+                    obj.collider.enabled = true;
+                }
 				//Debug.Log("powerV: " + powerLineVector.x + ", " + powerLineVector.y);
 			}
 			else

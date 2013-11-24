@@ -52,14 +52,13 @@
      <Compile Include="Assets\Meshcolor.cs" />
      <Compile Include="Assets\Motor.cs" />
      <Compile Include="Assets\NoFriction.cs" />
-     <Compile Include="Assets\SpecialCollider.cs" />
+     <Compile Include="Assets\SpeedUpSlowDown.cs" />
+     <Compile Include="Assets\StartUp.cs" />
      <Compile Include="Assets\StickyWall.cs" />
      <Compile Include="Assets\WallSlider.cs" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{79391AC5-8752-B4CC-F33F-BB9EB1094377}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
       <Project>{C62E21C4-7CD8-5581-1E66-AC8E36219989}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
   </ItemGroup>
