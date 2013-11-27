@@ -52,6 +52,7 @@
      <Compile Include="Assets\Meshcolor.cs" />
      <Compile Include="Assets\Motor.cs" />
      <Compile Include="Assets\NoFriction.cs" />
+     <Compile Include="Assets\NoPassThrough.cs" />
      <Compile Include="Assets\SpeedUpSlowDown.cs" />
      <Compile Include="Assets\StartUp.cs" />
      <Compile Include="Assets\StickyWall.cs" />

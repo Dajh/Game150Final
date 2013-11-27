@@ -26,6 +26,7 @@ public class Motor : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         checkpoints = GameObject.FindGameObjectsWithTag("Checkpoint");
+        this.gameObject.collider.material.bounceCombine = PhysicMaterialCombine.Multiply;
         //this.gameObject.collider.material.bounciness = 1F;
 		powerLine = PowerLine.GetComponent<LineRenderer>();
 		powerLine.SetWidth(0.5f,0.5f);

@@ -5,6 +5,7 @@ using System;
 public class Checkpoint : MonoBehaviour {
 
     private GameObject playerObject;
+    private SphereCollider playerCollider;
     private Motor playerMotor;
     private Collider[] colliders;
     private Collider triggerCollider;
@@ -14,21 +15,23 @@ public class Checkpoint : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         this.gameObject.renderer.material.color = new Color(0.1F, 0.75F, 1F, 1F);
+        this.gameObject.collider.material.bounciness = 0F;
+
 
         int n = 0;
-        int i = -1;
-        int w = -1;
+        int triggerIndex = -1;
+        int colliderIndex = -1;
         colliders = this.GetComponents<Collider>();
         for (int j = 0; j < colliders.Length; j++)
         {
             if (colliders[j].isTrigger == true)
             {
                 n++;
-                i = j;
+                triggerIndex = j;
             }
             if (colliders[j].isTrigger == false)
             {
-                w = j;
+                colliderIndex = j;
             }
         }
         if (n > 1)
@@ -41,12 +44,13 @@ public class Checkpoint : MonoBehaviour {
         }
         else
         {
-            triggerCollider = colliders[i];
-            actualCollider = colliders[w];
+            //triggerCollider = colliders[triggerIndex];
+            actualCollider = colliders[colliderIndex];
         }
 
         playerObject = GameObject.Find("Player");
         playerMotor = playerObject.GetComponent<Motor>();
+        playerCollider = playerObject.GetComponent<SphereCollider>();
 	}
 	
 	// Update is called once per frame
@@ -66,14 +70,21 @@ public class Checkpoint : MonoBehaviour {
         }*/
     }
 
-    void OnCollisionEnter()
+    void OnTriggerLeave()
+    {
+        actualCollider.enabled = true;
+    }
+
+    void OnCollisionEnter(Collision info)
     {
         if (stopMe)
         {
             playerMotor.inTheOpen = false;
-            playerObject.rigidbody.velocity = Vector3.zero;
-            triggerCollider.enabled = false;
             actualCollider.enabled = false;
+            playerObject.rigidbody.velocity = Vector3.zero;
+            info.rigidbody.transform.position = info.contacts[0].point - (info.contacts[0].normal.normalized * playerCollider.radius); //yeahbitch
+            stopMe = false;            
         }
     }
+
 }

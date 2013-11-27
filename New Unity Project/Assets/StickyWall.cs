@@ -6,15 +6,14 @@ public class StickyWall : MonoBehaviour {
 
     private Collider[] colliders;
     private Collider actualCollider;
-    private float otherBounciness;
-    private float actualColliderBounciness;
-    private float otherDrag;
-    private PhysicMaterialCombine otherBCombine;
-    private PhysicMaterialCombine actualColliderBCombine;
+    private float playerBounciness;
+    private float playerDrag;
     private Vector3 incomingV;
+    private Vector3 outgoingV;
 
 	// Use this for initialization
 	void Start () {
+        this.gameObject.renderer.material.color = new Color(1F, 1F, 0F, 1F);
         int n = 0;
         int i = -1;
         colliders = this.GetComponents<Collider>();
@@ -38,6 +37,8 @@ public class StickyWall : MonoBehaviour {
         {
             actualCollider = colliders[i];
         }
+
+        actualCollider.material.bounciness = 0F;
 	}
 	
 	// Update is called once per frame
@@ -45,35 +46,25 @@ public class StickyWall : MonoBehaviour {
 	
 	}
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider player)
     {
-        Debug.Log("entered trigger");
-        actualColliderBCombine = actualCollider.material.bounceCombine;
-        actualColliderBounciness = actualCollider.material.bounciness;
-        otherBCombine = other.material.bounceCombine;
-        otherBounciness = other.material.bounciness;
-        otherDrag = other.rigidbody.drag;
-        incomingV = new Vector3(other.rigidbody.velocity.x, other.rigidbody.velocity.y, 0F);
+        playerDrag = player.rigidbody.drag;
+        incomingV = new Vector3(player.rigidbody.velocity.x, player.rigidbody.velocity.y, 0F);
 
-        actualCollider.material.bounceCombine = PhysicMaterialCombine.Minimum;
-        actualCollider.material.bounciness = 0F;
-        other.material.bounceCombine = PhysicMaterialCombine.Minimum;
-        other.material.bounciness = 0F;
-        other.rigidbody.drag = 0F;
+        //other.material.bounceCombine = PhysicMaterialCombine.Minimum;
+        //other.material.bounciness = 0F;
+        player.rigidbody.drag = 0F;
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider player)
     {
-        Debug.Log("exited");
-        actualCollider.material.bounceCombine = actualColliderBCombine;
-        actualCollider.material.bounciness = actualColliderBounciness;
-        other.material.bounceCombine = otherBCombine;
-        other.material.bounciness = otherBounciness;
-        other.rigidbody.drag = otherDrag;
+        player.rigidbody.drag = playerDrag;
+        player.rigidbody.velocity = outgoingV; //FUCK YEAH MOTHERFUCKER
+    }
 
-        //yield return new WaitForSeconds(0.1F);
-        other.rigidbody.velocity = new Vector3(0F, 0F, 0F);
-        other.rigidbody.velocity = incomingV;
+    void OnCollisionEnter(Collision info)
+    {
+        outgoingV = incomingV + 2 * (Vector3.Dot(-incomingV, info.contacts[0].normal) * info.contacts[0].normal);
     }
 
 }
