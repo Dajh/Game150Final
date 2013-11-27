@@ -10,6 +10,7 @@ public class StickyWall : MonoBehaviour {
     private float playerDrag;
     private Vector3 incomingV;
     private Vector3 outgoingV;
+	private bool actuallyCollided = false;
 
 	// Use this for initialization
 	void Start () {
@@ -48,23 +49,32 @@ public class StickyWall : MonoBehaviour {
 
     void OnTriggerEnter(Collider player)
     {
+	Debug.Log("triggerenter");
         playerDrag = player.rigidbody.drag;
         incomingV = new Vector3(player.rigidbody.velocity.x, player.rigidbody.velocity.y, 0F);
 
         //other.material.bounceCombine = PhysicMaterialCombine.Minimum;
         //other.material.bounciness = 0F;
-        player.rigidbody.drag = 0F;
     }
 
     void OnTriggerExit(Collider player)
     {
-        player.rigidbody.drag = playerDrag;
-        player.rigidbody.velocity = outgoingV; //FUCK YEAH MOTHERFUCKER
+	Debug.Log("triggerleave");
+		if (actuallyCollided) 
+		{
+			player.rigidbody.drag = playerDrag;
+			player.rigidbody.velocity = Vector3.zero;
+			player.rigidbody.velocity = outgoingV; //FUCK YEAH MOTHERFUCKER
+			actuallyCollided = false;
+		}
     }
 
     void OnCollisionEnter(Collision info)
     {
+	Debug.Log("collisionenter");
+		info.collider.rigidbody.drag = 0F;
         outgoingV = incomingV + 2 * (Vector3.Dot(-incomingV, info.contacts[0].normal) * info.contacts[0].normal);
+		actuallyCollided = true;
     }
 
 }
