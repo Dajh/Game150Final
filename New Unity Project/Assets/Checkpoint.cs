@@ -19,7 +19,7 @@ public class Checkpoint : MonoBehaviour {
 
 
         int n = 0;
-        int triggerIndex = -1;
+        //int triggerIndex = -1;
         int colliderIndex = -1;
         colliders = this.GetComponents<Collider>();
         for (int j = 0; j < colliders.Length; j++)
@@ -27,7 +27,7 @@ public class Checkpoint : MonoBehaviour {
             if (colliders[j].isTrigger == true)
             {
                 n++;
-                triggerIndex = j;
+                //triggerIndex = j;
             }
             if (colliders[j].isTrigger == false)
             {

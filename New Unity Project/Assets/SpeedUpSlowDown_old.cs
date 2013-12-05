@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpeedUpSlowDown : MonoBehaviour {
+public class SpeedUpSlowDown_old : MonoBehaviour {
 
     private GameObject Player;
     private bool InTrigger = false;

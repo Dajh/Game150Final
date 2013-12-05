@@ -22,10 +22,12 @@ public class Motor : MonoBehaviour {
     public bool inTheOpen = false;
     private Vector3 posBeforeLaunch = new Vector3();
     private GameObject[] checkpoints;
+    private StartUp startUp;
 	
 	// Use this for initialization
 	void Start () {
         checkpoints = GameObject.FindGameObjectsWithTag("Checkpoint");
+        startUp = GameObject.Find("GlobalScripts").GetComponent<StartUp>();
         this.gameObject.collider.material.bounceCombine = PhysicMaterialCombine.Multiply;
         //this.gameObject.collider.material.bounciness = 1F;
 		powerLine = PowerLine.GetComponent<LineRenderer>();
@@ -53,6 +55,7 @@ public class Motor : MonoBehaviour {
             if (inTheOpen)
             {
                 this.gameObject.rigidbody.position = posBeforeLaunch;
+                inTheOpen = false;
             }
             Vector3 linesEnd = (mousePos - objPos).normalized;
             this.gameObject.rigidbody.velocity = new Vector3(0F, 0F, 0F);
@@ -95,9 +98,14 @@ public class Motor : MonoBehaviour {
                 powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
 				power = 1F;
 				this.gameObject.transform.rigidbody.AddForce(powerLineVector * SpeedMultiplier);
+                startUp.shotCount++;
                 foreach (GameObject obj in checkpoints)
                 {
                     obj.collider.enabled = true;
+                }
+                if (!startUp.timerStart)
+                {
+                    startUp.timerStart = true;
                 }
 				//Debug.Log("powerV: " + powerLineVector.x + ", " + powerLineVector.y);
 			}
@@ -127,13 +135,14 @@ public class Motor : MonoBehaviour {
 		}
 		#endregion
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
-            //Debug.Log("Ball: " + objPos.normalized.x + "," + objPos.normalized.y);
-            //Debug.Log("Mouse: " + mousePos.normalized.x + "," + mousePos.normalized.y);
-            //Debug.Log("V: " + this.gameObject.rigidbody.velocity.x + ", " + this.gameObject.rigidbody.velocity.y);
-            //Debug.Log("mDist: " + mouseDistance);
-            Debug.Log("vMag: " + this.gameObject.rigidbody.velocity.magnitude);
+            if (inTheOpen)
+            {
+                this.gameObject.rigidbody.velocity = Vector3.zero;
+                this.gameObject.rigidbody.position = posBeforeLaunch;
+                inTheOpen = false;
+            }
         }
 	}
 }

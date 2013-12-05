@@ -8,6 +8,7 @@ public class StickyWall : MonoBehaviour {
     private Collider actualCollider;
     private float playerBounciness;
     private float playerDrag;
+    private float playerFriction;
     private Vector3 incomingV;
     private Vector3 outgoingV;
 	private bool actuallyCollided = false;
@@ -40,6 +41,9 @@ public class StickyWall : MonoBehaviour {
         }
 
         actualCollider.material.bounciness = 0F;
+        actualCollider.material.frictionCombine = PhysicMaterialCombine.Multiply;
+        actualCollider.material.dynamicFriction = 0F;
+        actualCollider.material.staticFriction = 0F;
 	}
 	
 	// Update is called once per frame
@@ -51,6 +55,7 @@ public class StickyWall : MonoBehaviour {
     {
 	Debug.Log("triggerenter");
         playerDrag = player.rigidbody.drag;
+        playerFriction = player.material.dynamicFriction;
         incomingV = new Vector3(player.rigidbody.velocity.x, player.rigidbody.velocity.y, 0F);
 
         //other.material.bounceCombine = PhysicMaterialCombine.Minimum;
@@ -63,8 +68,9 @@ public class StickyWall : MonoBehaviour {
 		if (actuallyCollided) 
 		{
 			player.rigidbody.drag = playerDrag;
+            player.material.dynamicFriction = playerFriction;
 			player.rigidbody.velocity = Vector3.zero;
-			player.rigidbody.velocity = outgoingV; //FUCK YEAH MOTHERFUCKER
+			player.rigidbody.velocity = outgoingV;
 			actuallyCollided = false;
 		}
     }
@@ -72,9 +78,17 @@ public class StickyWall : MonoBehaviour {
     void OnCollisionEnter(Collision info)
     {
 	Debug.Log("collisionenter");
+    Debug.Log(info.collider.name);
 		info.collider.rigidbody.drag = 0F;
+        info.collider.material.dynamicFriction = 0F;
         outgoingV = incomingV + 2 * (Vector3.Dot(-incomingV, info.contacts[0].normal) * info.contacts[0].normal);
 		actuallyCollided = true;
+    }
+
+    void OnCollisionStay(Collision info)
+    {
+        //Debug.Log(incomingV.x);
+        info.collider.rigidbody.velocity = new Vector3(incomingV.x, 0F, 0F);
     }
 
 }
