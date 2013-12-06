@@ -23,11 +23,13 @@ public class Motor : MonoBehaviour {
     private Vector3 posBeforeLaunch = new Vector3();
     private GameObject[] checkpoints;
     private StartUp startUp;
+    private Finish finish;
 	
 	// Use this for initialization
 	void Start () {
         checkpoints = GameObject.FindGameObjectsWithTag("Checkpoint");
         startUp = GameObject.Find("GlobalScripts").GetComponent<StartUp>();
+        finish = GameObject.Find("CheckpointFinish").GetComponent<Finish>();
         this.gameObject.collider.material.bounceCombine = PhysicMaterialCombine.Multiply;
         //this.gameObject.collider.material.bounciness = 1F;
 		powerLine = PowerLine.GetComponent<LineRenderer>();
@@ -42,106 +44,109 @@ public class Motor : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
-		Vector3 objPos = this.gameObject.transform.position;
-		Vector3 powerLineVector = objPos;
-        Vector3[] aimLineVectors = new Vector3[2];
+        if (!finish.finished)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
+            Vector3 objPos = this.gameObject.transform.position;
+            Vector3 powerLineVector = objPos;
+            Vector3[] aimLineVectors = new Vector3[2];
 
-		float mouseDistance = (mousePos - objPos).magnitude;
+            float mouseDistance = (mousePos - objPos).magnitude;
 
-		#region Manages drawing of the aiming and force LineRenderers
-		if (this.gameObject.rigidbody.velocity.magnitude < 0.01F)
-		{
-            if (inTheOpen)
+            #region Manages drawing of the aiming and force LineRenderers
+            if (this.gameObject.rigidbody.velocity.magnitude < 0.01F)
             {
-                this.gameObject.rigidbody.position = posBeforeLaunch;
-                inTheOpen = false;
-            }
-            Vector3 linesEnd = (mousePos - objPos).normalized;
-            this.gameObject.rigidbody.velocity = new Vector3(0F, 0F, 0F);
-			//Debug.Log(mouseDistance);
-			if (mouseDistance < 20F)
-			{
-                aimLineVectors[0] = (objPos + linesEnd * Radius) + lineHeight;
-                aimLineVectors[1] = (objPos + linesEnd * aimLineLength) + lineHeight;
-                aimLine.SetPosition(0, aimLineVectors[0]);
-				aimLine.SetPosition(1, aimLineVectors[1]);
-			}
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                posBeforeLaunch = objPos;
-                //Debug.Log("Mouse0 pressed.");
-            }
-			if (Input.GetKey(KeyCode.Mouse0))
-			{
-				powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
-                if (power - Radius >= LineLength || power - Radius <= 0F)
+                if (inTheOpen)
                 {
-                    powerInc = !powerInc;
+                    this.gameObject.rigidbody.position = posBeforeLaunch;
+                    inTheOpen = false;
                 }
-                if (powerInc)
+                Vector3 linesEnd = (mousePos - objPos).normalized;
+                this.gameObject.rigidbody.velocity = new Vector3(0F, 0F, 0F);
+                //Debug.Log(mouseDistance);
+                if (mouseDistance < 20F)
                 {
-                    power += PowerIncrement;
+                    aimLineVectors[0] = (objPos + linesEnd * Radius) + lineHeight;
+                    aimLineVectors[1] = (objPos + linesEnd * aimLineLength) + lineHeight;
+                    aimLine.SetPosition(0, aimLineVectors[0]);
+                    aimLine.SetPosition(1, aimLineVectors[1]);
+                }
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    posBeforeLaunch = objPos;
+                    //Debug.Log("Mouse0 pressed.");
+                }
+                if (Input.GetKey(KeyCode.Mouse0))
+                {
+                    powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
+                    if (power - Radius >= LineLength || power - Radius <= 0F)
+                    {
+                        powerInc = !powerInc;
+                    }
+                    if (powerInc)
+                    {
+                        power += PowerIncrement;
+                    }
+                    else
+                    {
+                        power -= PowerIncrement;
+                    }
+                    //Debug.Log("Power = " + power + " | LineRatio = " + (((objPos + powerLineVector) + lineHeight) - ((objPos + linesEnd * Radius) + lineHeight)).magnitude / power);
+                    powerLine.SetPosition(0, (objPos + linesEnd * Radius) + lineHeight);
+                    powerLine.SetPosition(1, (objPos + powerLineVector) + lineHeight);
+                }
+                else if (Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    //Debug.Log("Mouse0 up");
+                    inTheOpen = true;
+                    powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
+                    power = 1F;
+                    this.gameObject.transform.rigidbody.AddForce(powerLineVector * SpeedMultiplier);
+                    startUp.shotCount++;
+                    foreach (GameObject obj in checkpoints)
+                    {
+                        obj.collider.enabled = true;
+                    }
+                    if (!startUp.timerStart)
+                    {
+                        startUp.timerStart = true;
+                    }
+                    //Debug.Log("powerV: " + powerLineVector.x + ", " + powerLineVector.y);
                 }
                 else
                 {
-                    power -= PowerIncrement;
+                    powerLineVector = objPos;
+                    powerLine.SetPosition(0, objPos);
+                    powerLine.SetPosition(1, objPos);
                 }
-                //Debug.Log("Power = " + power + " | LineRatio = " + (((objPos + powerLineVector) + lineHeight) - ((objPos + linesEnd * Radius) + lineHeight)).magnitude / power);
-                powerLine.SetPosition(0, (objPos + linesEnd * Radius) + lineHeight);
-				powerLine.SetPosition(1, (objPos + powerLineVector) + lineHeight);
-			}
-			else if (Input.GetKeyUp(KeyCode.Mouse0))
-			{
-                //Debug.Log("Mouse0 up");
-                inTheOpen = true;
-                powerLineVector = (aimLineVectors[1] - aimLineVectors[0]).normalized * power;
-				power = 1F;
-				this.gameObject.transform.rigidbody.AddForce(powerLineVector * SpeedMultiplier);
-                startUp.shotCount++;
-                foreach (GameObject obj in checkpoints)
-                {
-                    obj.collider.enabled = true;
-                }
-                if (!startUp.timerStart)
-                {
-                    startUp.timerStart = true;
-                }
-				//Debug.Log("powerV: " + powerLineVector.x + ", " + powerLineVector.y);
-			}
-			else
-			{
-				powerLineVector = objPos;
-				powerLine.SetPosition(0, objPos);
-				powerLine.SetPosition(1, objPos);
-			}
-		}
-		else
-		{
-            aimLineVectors[0] = objPos;
-            aimLineVectors[1] = objPos;
-			aimLine.SetPosition(0, aimLineVectors[0]);
-			aimLine.SetPosition(1, aimLineVectors[1]);
-			powerLine.SetPosition(0, objPos);
-			powerLine.SetPosition(1, objPos);
-            if (this.gameObject.rigidbody.velocity.magnitude > LowSpeedDragThreshold)
-            {
-                this.gameObject.rigidbody.drag = HighSpeedDrag;
             }
             else
             {
-                this.gameObject.rigidbody.drag = LowSpeedDrag;
+                aimLineVectors[0] = objPos;
+                aimLineVectors[1] = objPos;
+                aimLine.SetPosition(0, aimLineVectors[0]);
+                aimLine.SetPosition(1, aimLineVectors[1]);
+                powerLine.SetPosition(0, objPos);
+                powerLine.SetPosition(1, objPos);
+                if (this.gameObject.rigidbody.velocity.magnitude > LowSpeedDragThreshold)
+                {
+                    this.gameObject.rigidbody.drag = HighSpeedDrag;
+                }
+                else
+                {
+                    this.gameObject.rigidbody.drag = LowSpeedDrag;
+                }
             }
-		}
-		#endregion
+            #endregion
 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (inTheOpen)
+            if (Input.GetKey(KeyCode.Space))
             {
-                this.gameObject.rigidbody.velocity = Vector3.zero;
-                this.gameObject.rigidbody.position = posBeforeLaunch;
-                inTheOpen = false;
+                if (inTheOpen)
+                {
+                    this.gameObject.rigidbody.velocity = Vector3.zero;
+                    this.gameObject.rigidbody.position = posBeforeLaunch;
+                    inTheOpen = false;
+                }
             }
         }
 	}

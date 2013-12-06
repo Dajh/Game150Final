@@ -49,6 +49,7 @@
      <Compile Include="Assets\CameraScript.cs" />
      <Compile Include="Assets\Checkpoint.cs" />
      <Compile Include="Assets\DebugScript.cs" />
+     <Compile Include="Assets\Finish.cs" />
      <Compile Include="Assets\Meshcolor.cs" />
      <Compile Include="Assets\Motor.cs" />
      <Compile Include="Assets\NoFriction.cs" />
