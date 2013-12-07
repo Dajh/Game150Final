@@ -53,7 +53,7 @@ public class StickyWall : MonoBehaviour {
 
     void OnTriggerEnter(Collider player)
     {
-	Debug.Log("triggerenter");
+	//Debug.Log("triggerenter");
         playerDrag = player.rigidbody.drag;
         playerFriction = player.material.dynamicFriction;
         incomingV = new Vector3(player.rigidbody.velocity.x, player.rigidbody.velocity.y, 0F);
@@ -64,7 +64,7 @@ public class StickyWall : MonoBehaviour {
 
     void OnTriggerExit(Collider player)
     {
-	Debug.Log("triggerleave");
+	//Debug.Log("triggerleave");
 		if (actuallyCollided) 
 		{
 			player.rigidbody.drag = playerDrag;
@@ -77,8 +77,8 @@ public class StickyWall : MonoBehaviour {
 
     void OnCollisionEnter(Collision info)
     {
-	Debug.Log("collisionenter");
-    Debug.Log(info.collider.name);
+	//Debug.Log("collisionenter");
+    //Debug.Log(info.collider.name);
 		info.collider.rigidbody.drag = 0F;
         info.collider.material.dynamicFriction = 0F;
         outgoingV = incomingV + 2 * (Vector3.Dot(-incomingV, info.contacts[0].normal) * info.contacts[0].normal);

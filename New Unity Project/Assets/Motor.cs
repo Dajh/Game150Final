@@ -24,6 +24,7 @@ public class Motor : MonoBehaviour {
     private GameObject[] checkpoints;
     private StartUp startUp;
     private Finish finish;
+    public AudioClip bounce;
 	
 	// Use this for initialization
 	void Start () {
@@ -52,6 +53,16 @@ public class Motor : MonoBehaviour {
             Vector3[] aimLineVectors = new Vector3[2];
 
             float mouseDistance = (mousePos - objPos).magnitude;
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (inTheOpen)
+                {
+                    this.gameObject.rigidbody.velocity = Vector3.zero;
+                    this.gameObject.rigidbody.position = posBeforeLaunch;
+                    inTheOpen = false;
+                }
+            }
 
             #region Manages drawing of the aiming and force LineRenderers
             if (this.gameObject.rigidbody.velocity.magnitude < 0.01F)
@@ -122,6 +133,7 @@ public class Motor : MonoBehaviour {
             }
             else
             {
+                inTheOpen = true;
                 aimLineVectors[0] = objPos;
                 aimLineVectors[1] = objPos;
                 aimLine.SetPosition(0, aimLineVectors[0]);
@@ -139,15 +151,15 @@ public class Motor : MonoBehaviour {
             }
             #endregion
 
-            if (Input.GetKey(KeyCode.Space))
-            {
-                if (inTheOpen)
-                {
-                    this.gameObject.rigidbody.velocity = Vector3.zero;
-                    this.gameObject.rigidbody.position = posBeforeLaunch;
-                    inTheOpen = false;
-                }
-            }
+            
         }
 	}
+
+    void OnCollisionEnter()
+    {
+        if (inTheOpen)
+        {
+            AudioSource.PlayClipAtPoint(bounce, this.gameObject.rigidbody.position);
+        }
+    }
 }
