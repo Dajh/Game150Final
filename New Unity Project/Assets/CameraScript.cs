@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraScript : MonoBehaviour {
 
     public float maxZoom = 12;
-    public float minZoom = 22;
+    public float minZoom = 30;
 
 	// Use this for initialization
 	void Start () {

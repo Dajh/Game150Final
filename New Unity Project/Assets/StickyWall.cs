@@ -88,7 +88,14 @@ public class StickyWall : MonoBehaviour {
     void OnCollisionStay(Collision info)
     {
         //Debug.Log(incomingV.x);
-        info.collider.rigidbody.velocity = new Vector3(incomingV.x, 0F, 0F);
+        if (this.transform.eulerAngles.z == 90F)
+        {
+            info.collider.rigidbody.velocity = new Vector3(0F, incomingV.y, 0F);
+        }
+        else if (this.transform.eulerAngles.z == 0F)
+        {
+            info.collider.rigidbody.velocity = new Vector3(incomingV.x, 0F, 0F);
+        }
     }
 
 }

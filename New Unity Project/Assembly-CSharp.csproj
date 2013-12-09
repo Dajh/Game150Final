@@ -50,7 +50,9 @@
      <Compile Include="Assets\Checkpoint.cs" />
      <Compile Include="Assets\DebugScript.cs" />
      <Compile Include="Assets\Finish.cs" />
+     <Compile Include="Assets\Gamble.cs" />
      <Compile Include="Assets\Meshcolor.cs" />
+     <Compile Include="Assets\MeshcolorForGamble.cs" />
      <Compile Include="Assets\Motor.cs" />
      <Compile Include="Assets\NoFriction.cs" />
      <Compile Include="Assets\NoPassThrough.cs" />

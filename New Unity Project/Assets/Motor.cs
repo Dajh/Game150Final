@@ -75,13 +75,13 @@ public class Motor : MonoBehaviour {
                 Vector3 linesEnd = (mousePos - objPos).normalized;
                 this.gameObject.rigidbody.velocity = new Vector3(0F, 0F, 0F);
                 //Debug.Log(mouseDistance);
-                if (mouseDistance < 20F)
-                {
+                //if (mouseDistance < 20F)
+                //{
                     aimLineVectors[0] = (objPos + linesEnd * Radius) + lineHeight;
                     aimLineVectors[1] = (objPos + linesEnd * aimLineLength) + lineHeight;
                     aimLine.SetPosition(0, aimLineVectors[0]);
                     aimLine.SetPosition(1, aimLineVectors[1]);
-                }
+                //}
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
                     posBeforeLaunch = objPos;
@@ -155,7 +155,7 @@ public class Motor : MonoBehaviour {
         }
 	}
 
-    void OnCollisionEnter()
+    void OnCollisionExit()
     {
         if (inTheOpen)
         {

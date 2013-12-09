@@ -10,11 +10,14 @@ public class StartUp : MonoBehaviour {
     [HideInInspector]
     public bool timerStart = false;
     private int frameIndex = 0;
-    private GUIStyle timerStyle = new GUIStyle();
+    [HideInInspector]
+    public System.Random rand = new System.Random();
+    
 
 
 	// Use this for initialization
 	void Start () {
+        //Debug.Log(Application.levelCount);
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         GameObject plane = GameObject.FindGameObjectWithTag("Plane");
         plane.collider.material.staticFriction = 0F;
@@ -31,8 +34,7 @@ public class StartUp : MonoBehaviour {
             wall.collider.material.dynamicFriction = 0F;
             wall.collider.material.frictionCombine = PhysicMaterialCombine.Multiply;
         }
-        timerStyle.fontSize = 22;
-        timerStyle.normal.textColor = Color.white;
+
 	}
 	
 	// Update is called once per frame
@@ -57,9 +59,4 @@ public class StartUp : MonoBehaviour {
 
     }
 
-    void OnGUI()
-    {
-        GUI.Label(new Rect(10, 5, 100, 40), string.Format("{0}:{1}", (timer / 60).ToString("00"), (timer % 60).ToString("00")), timerStyle);
-        GUI.Label(new Rect(10, 40, 100, 40), string.Format("Shots taken: {0}", shotCount), timerStyle);
-    }
 }
